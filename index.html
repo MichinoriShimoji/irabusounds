@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sound samples of Irabu Ryukyuan (Miyako, Japonic)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Optima, 'Optima Nova', 'Linux Libertine', Georgia, 'Times New Roman', serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            letter-spacing: 0.02em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            color: #222;
+            letter-spacing: 0.05em;
+            font-family: Optima, 'Optima Nova', 'Linux Libertine', Georgia, serif;
+        }
+
+        /* フィルターボタン */
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .filter-btn:hover {
+            border-color: #333;
+            color: #333;
+        }
+
+        .filter-btn.active {
+            background: #333;
+            color: #fff;
+            border-color: #333;
+        }
+
+        /* メディアグリッド */
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .media-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .media-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .media-thumbnail {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .media-thumbnail video,
+        .media-thumbnail audio {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .media-info {
+            padding: 1.5rem;
+        }
+
+        .media-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #222;
+            font-family: Optima, 'Optima Nova', 'Linux Libertine', Georgia, serif;
+            letter-spacing: 0.03em;
+        }
+
+        .media-ipa {
+            font-size: 0.95rem;
+            color: #888;
+            margin: 0.25rem 0 0.5rem 0;
+            font-family: 'Times New Roman', 'Noto Serif', serif;
+            letter-spacing: 0.01em;
+        }
+
+        .media-caption {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .media-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .media-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #e3f2fd;
+            color: #1976d2;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .zenodo-link {
+            font-size: 0.8rem;
+            color: #1976d2;
+            text-decoration: none;
+        }
+
+        /* モーダル */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            margin-top: 50px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .modal-media {
+            width: 100%;
+            min-height: 400px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-media video {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .modal-info {
+            padding: 2rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .modal-caption {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .media-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sound samples of Irabu Ryukyuan (Miyako, Japonic)</h1>
+        
+        <!-- フィルターボタン -->
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">すべて（20）</button>
+            <button class="filter-btn" data-filter="video">動画（10）</button>
+            <button class="filter-btn" data-filter="audio">音声（10）</button>
+        </div>
+
+        <!-- メディアグリッド -->
+        <div class="media-grid" id="mediaGrid"></div>
+    </div>
+
+    <!-- モーダル -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-media" id="modalMedia"></div>
+            <div class="modal-info">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <p class="modal-caption" id="modalCaption"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // データを直接埋め込み
+        const mediaData = [
+            {
+                "title": "/u/と/v/の違い",
+                "ipa": "[ʊ] vs. [ʋ]",
+                "caption": "日本語ではどちらも「う」に聞こえるかもしれないほど似ているが、伊良部島方言では明確に対立します。",
+                "url": "https://zenodo.org/records/16574991/files/pavandfau.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/vva/「あなた」",
+                "ipa": "[ʋːa]",
+                "caption": "語頭の重子音の例",
+                "url": "https://zenodo.org/records/16574991/files/vva.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/ffa/「子」",
+                "ipa": "[fːa]",
+                "caption": "語頭の重子音の例。",
+                "url": "https://zenodo.org/records/16574991/files/ffa.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/avva/ 「油」",
+                "ipa": "[avːa]",
+                "caption": "/v/を持つ言語は日琉諸語では珍しい方です。伊良部島方言の/v/は常に1モーラの長さを持つ環境で生じます。重子音とコーダ、そして成節子音です。",
+                "url": "https://zenodo.org/records/16574991/files/avva.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/bžž/「座る」",
+                "ipa": "[bz̞ː]",
+                "caption": "/ž/は、摩擦音[z]が弱まった接近音を中核の音として持っていて、決して破擦音にはなりません（破擦音/z/は別音素）。/v/と同じく、常に1モーラの長さを持つ環境で生じます。/v/よりも広い環境で生じ、この例では音節核で/b/をオンセットにとっています（CVV構造）。/ž/が伴えるオンセットCは両唇音のみです。",
+                "url": "https://zenodo.org/records/16574991/files/bzz.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/pždar/「左」",
+                "ipa": "[psz̞daɭ]",
+                "caption": "/ž/は、無声音の後では[s]に近い入り渡りを伴います。",
+                "url": "https://zenodo.org/records/16574991/files/pzdar.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/pžtu/「人」",
+                "ipa": "[ps̩tʊ]",
+                "caption": "/ž/は、無声音の後で、かつさらに無声音が後続する場合はよりはっきりと[s]のような音声になります。",
+                "url": "https://zenodo.org/records/16574991/files/pztu.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/pazɨ/「足」",
+                "ipa": "[padzɨ]",
+                "caption": "/z/は破擦音[dz]です。摩擦音/ž/との対立があるため、決して[d]が落ちることはありません。",
+                "url": "https://zenodo.org/records/16574991/files/pazI.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/fɨsur/「薬」",
+                "ipa": "[fʋsʊɭ]",
+                "caption": "/r/は、1モーラを持つ環境では反り舌のエル[ɭ]になり、それ以外（つまり軽音節オンセット）では[ɾ]になります。",
+                "url": "https://zenodo.org/records/16574991/files/fIsur.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/prrma/「昼」",
+                "ipa": "[pɭːma]",
+                "caption": "/r/は、/ž/と同様、CV音節の核の位置に立てます。/ž/と同様、伴えるオンセットCは両唇音のみです。",
+                "url": "https://zenodo.org/records/16574991/files/prrma.mp4?download=1",
+                "type": "video"
+            },
+            {
+                "title": "/sɨba/「唇」",
+                "ipa": "[sɨba]",
+                "caption": "/ɨ/は中舌狭母音。意識して平舌で発音する。円唇の/u/と明確に対立する。/ɨ/は/f, s, c [ts], z [dz]/の後にのみ生じる。",
+                "url": "https://zenodo.org/records/16574991/files/sIba.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/ssan/「知らない」",
+                "ipa": "[sːaŋ]",
+                "caption": "語頭の重子音の例。無声阻害音 /t, f, s, c [ts]/と共鳴音/m, n, ž, v, r/が語頭重子音として立ち、琉球諸語でも最も多様な要素が立てる方言の1つです。",
+                "url": "https://zenodo.org/records/16574991/files/ssan.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/ttar/「来た」",
+                "ipa": "[tːaɭ]",
+                "caption": "語頭の重子音の例。閉鎖音は/t/の場合のみ。",
+                "url": "https://zenodo.org/records/16574991/files/ttar.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/ccir/「キセル」",
+                "ipa": "[tːɕiɭ]",
+                "caption": "語頭の重子音の例。破擦音は/c/の場合のみ。閉鎖区間があるので、/tt/と同じく緊喉するのがわかる。",
+                "url": "https://zenodo.org/records/16574991/files/ccir.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/kan/「かに」",
+                "ipa": "[kaŋ]",
+                "caption": "語末コーダが豊富なのも伊良部島方言（を含む宮古語）の特徴。/kam/ [kam]「神」と対立する点に注意。",
+                "url": "https://zenodo.org/records/16574991/files/kan.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/kam/「神」",
+                "ipa": "[kam]",
+                "caption": "語末コーダが豊富なのも伊良部島方言（を含む宮古語）の特徴。/kan/ [kaŋ]「かに」と対立する点に注意。",
+                "url": "https://zenodo.org/records/16574991/files/kam.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/maž/「米」",
+                "ipa": "[maz̞]",
+                "caption": "語末コーダが豊富なのも伊良部島方言（を含む宮古語）の特徴。",
+                "url": "https://zenodo.org/records/16574991/files/maz.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/par/「針」",
+                "ipa": "[paɭ]",
+                "caption": "語末コーダが豊富なのも伊良部島方言（を含む宮古語）の特徴。",
+                "url": "https://zenodo.org/records/16574991/files/par.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/mta/「土」",
+                "ipa": "[mta]",
+                "caption": "成節子音（凖音節）＋CVの構造。凖音節は共鳴音で、常に語頭に生じます。",
+                "url": "https://zenodo.org/records/16574991/files/mta.wav?download=1",
+                "type": "audio"
+            },
+            {
+                "title": "/nudu/「首」",
+                "ipa": "[nʊdʊ]",
+                "caption": "伊良部島方言の/u/は、他の宮古語よりもやや[o]寄りで、若干前寄りです。私は[ʊ]を使って記録します。",
+                "url": "https://zenodo.org/records/16574991/files/nudu.wav?download=1",
+                "type": "audio"
+            }
+        ];
+
+        let currentFilter = 'all';
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // フィルターボタンの設定
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    setFilter(this.getAttribute('data-filter'));
+                });
+            });
+            
+            // メディアを表示
+            displayMedia();
+        });
+
+        // メディアを表示
+        function displayMedia() {
+            const grid = document.getElementById('mediaGrid');
+            
+            // フィルタリング
+            const filteredMedia = currentFilter === 'all' 
+                ? mediaData 
+                : mediaData.filter(item => item.type === currentFilter);
+            
+            grid.innerHTML = filteredMedia.map((item, index) => {
+                const recordId = item.url.match(/records\/(\d+)/)?.[1] || '';
+                const isVideo = item.type === 'video';
+                
+                return `
+                    <div class="media-card" style="animation-delay: ${index * 0.05}s" 
+                         onclick="openModal('${escapeQuotes(item.title)}', '${escapeQuotes(item.ipa)}', '${escapeQuotes(item.caption)}', '${escapeQuotes(item.url)}', '${item.type}')">
+                        <div class="media-thumbnail">
+                            ${isVideo ? 
+                                `<video controls>
+                                    <source src="${item.url}" type="video/mp4">
+                                    お使いのブラウザは動画をサポートしていません。
+                                </video>` :
+                                `<audio controls style="width: 100%; height: 100%;">
+                                    <source src="${item.url}" type="audio/wav">
+                                    お使いのブラウザは音声をサポートしていません。
+                                </audio>`
+                            }
+                        </div>
+                        <div class="media-info">
+                            <h3 class="media-title">${item.title}</h3>
+                            <p class="media-ipa">${item.ipa}</p>
+                            <p class="media-caption">${item.caption}</p>
+                            <div class="media-meta">
+                                <span class="media-type">${item.type}</span>
+                                <a href="https://zenodo.org/records/${recordId}" target="_blank" class="zenodo-link">
+                                    Zenodo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 文字列のエスケープ
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        // フィルター設定
+        function setFilter(filter) {
+            currentFilter = filter;
+            
+            // ボタンのアクティブ状態を更新
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            
+            // 表示を更新
+            displayMedia();
+        }
+
+        // モーダルを開く
+        function openModal(title, ipa, caption, url, type) {
+            const modal = document.getElementById('modal');
+            const modalMedia = document.getElementById('modalMedia');
+            
+            document.getElementById('modalTitle').innerHTML = title + (ipa ? ` <span style="font-weight: 400; color: #888;">${ipa}</span>` : '');
+            document.getElementById('modalCaption').textContent = caption;
+            
+            if (type === 'video') {
+                modalMedia.innerHTML = `
+                    <video controls style="width: 100%; height: auto;">
+                        <source src="${url}" type="video/mp4">
+                        動画を再生できません
+                    </video>
+                `;
+            } else {
+                modalMedia.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; min-height: 300px;">
+                        <audio controls style="width: 80%; max-width: 500px;">
+                            <source src="${url}" type="audio/wav">
+                            音声を再生できません
+                        </audio>
+                    </div>
+                `;
+            }
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // モーダルを閉じる
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            const modalMedia = document.getElementById('modalMedia');
+            
+            // ビデオを停止
+            const video = modalMedia.querySelector('video');
+            if (video) video.pause();
+            
+            modalMedia.innerHTML = '';
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // モーダルの外側クリックで閉じる
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
